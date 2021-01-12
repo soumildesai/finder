@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Finder</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.2.0/mapbox-gl-geocoder.css' type='text/css' />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <style>
+      body { margin: 0; padding: 0; }
+      #map { position: absolute; top: 20; bottom: 0; width: 100%; height: 95%;}
+    </style>
+</head>
+<body>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+  <link
+  rel="stylesheet"
+  href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.css"
+  type="text/css"
+  />
+  <!-- Promise polyfill script required to use Mapbox GL Geocoder in IE 11 -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <style>
+  .geocoder {
+  width: 20%;
+  top: 10px;
+  margin-left: auto;
+  margin-top: 2.5px;
+  }
+  .mapboxgl-ctrl-geocoder {
+  min-width: 100%;
+  }
+  #map {
+  margin-top: 75px;
+  width: 80%;
+  }
+  </style>
+  <nav>
+    <div class="title">
+      <a href="index.html" id="headerHome">Hello</a>
+    </div>
+      <ul class="navlinks">
+        <!-- change height of nav -->
+        <li><a href="index.html">Home</a></li>
+        <li><a href="page2.html">Directions</a></li>
+        <li><a href="pg3.html">Find Places</a></li>
+      </ul>
+  </nav>
+  <div id='map'></div>
+  <div class="geocoder" id="geocoder"></div>
+<script>
+  let latitude = 0;
+  let longitude = 0;
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition,showError);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }     
+  function showPosition(position) {
+    latitude = position.coords.latitude.toString();
+    longitude = position.coords.longitude.toString();
+    var coordinates = longitude.concat(latitude);
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic291bWlsZGVzYWkiLCJhIjoiY2tnbnk3ZGlnMDV5dTJ0bXRid2UxM2k1YiJ9.X0IksSs8jASxqvYUU_s4NA';
+    var map = new mapboxgl.Map({
+      container: 'map', // Container ID
+      style: 'mapbox://styles/mapbox/streets-v11', // Map style to use
+      center: [position.coords.longitude, position.coords.latitude], // Starting position [lng, lat]
+      zoom: 12, // Starting zoom level
+    });
+    console.log(map.getCenter())
+    // $.ajax({
+    //   url: 'http://api.positionstack.com/v1/reverse',
+    //   data: {
+    //   access_key: '2730d3f4e177a1be92693607ca181451',
+    //   query: "41.9,-87.6",
+    //   output: 'json',
+    //   }
+    //   }).done(function(data) {
+    //       console.log(data);
+    //   });
+    var postalcode = 0;
+    //get postal code
+    fetch("https://api.mapbox.com/geocoding/v5/mapbox.places/"+map.getCenter().lng+","+map.getCenter().lat+".json?access_token=pk.eyJ1Ijoic291bWlsZGVzYWkiLCJhIjoiY2tnbnk3ZGlnMDV5dTJ0bXRid2UxM2k1YiJ9.X0IksSs8jASxqvYUU_s4NA")
+    .then(response => {
+      return response.json();
+    })
+    .then((data)=>{
+      postalcode = data.features[2].text;
+      var deaths = 0;
+      var positive = 0;
+      var recovered = 0;
+      fetch("https://localcoviddata.com/covid19/v1/cases/newYorkTimes?zipCode="+postalcode+"&daysInPast=1")
+      .then(response => {
+        return response.json();
+      })
+      .then((data)=>{
+        deaths = data[0].historicData.deathCt;
+        positive = data[0].historicData.positiveCt;
+        recovered = data[0].historicData.recoveredCt;
+        console.log(deaths+", "+positive+", "+recovered);
+        countyname = data[0].historicData.countyName;
+      })
+    })
+
+    var marker = new mapboxgl.Marker() // Initialize a new marker
+      .setLngLat([position.coords.longitude, position.coords.latitude]) // Marker [lng, lat] coordinates
+      .addTo(map); // Add the marker to the map
+    map.on('load', function() {
+      map.addSource('single-point', {
+        type: 'geojson',
+        data: {
+          type: 'FeatureCollection',
+          features: []
+        }
+      });
+
+      map.addLayer({
+        id: 'point',
+        source: 'single-point',
+        type: 'circle',
+        paint: {
+          'circle-radius': 10,
+          'circle-color': '#448ee4'
+        }
+      });
+
+      // Listen for the `result` event from the Geocoder
+      // `result` event is triggered when a user makes a selection
+      // Add a marker at the result's coordinates
+      geocoder.on('result', function(ev) {
+        map.getSource('single-point').setData(ev.result.geometry);
+      });
+      console.log(map.getCenter().lat);
+    });
+    map.addControl(new mapboxgl.NavigationControl());
+    var geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl
+    });
+ 
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+  }
+  function showError(){
+    console.log('hi');
+  }
+  getLocation();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Display driving directions</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+  #map { position: absolute; top: 20; bottom: 0; width: 100%; height: 95%;}
+</style>
+</head>
+<body>
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+<link
+rel="stylesheet"
+href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+type="text/css"
+/>
+<link rel="stylesheet" href="style.css">
+<nav>
+  <div class="title">
+    <a href="index.html" id="headerHome">Hello</a>
+  </div>
+    <ul class="navlinks">
+      <!-- change height of nav -->
+      <li><a href="index.html">Home</a></li>
+      <li><a href="page2.html">Directions</a></li>
+      <li><a href="pg3.html">Find Places</a></li>
+    </ul>
+</nav>
+<div id="map"></div>
+<div id="geocoder" class="geocoder"></div>
+<style>.geocoder {
+  position: absolute;
+  z-index: 1;
+  width: 50%;
+  left: 50%;
+  margin-left: -25%;
+  top: 10px;
+  }
+  .mapboxgl-ctrl-geocoder {
+  min-width: 100%;
+  }
+  #map {
+  margin-top: 75px;
+  }</style>
+<script>
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else {
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}     
+function showPosition(position) {
+  mapboxgl.accessToken = 'pk.eyJ1Ijoic291bWlsZGVzYWkiLCJhIjoiY2tnbnk3ZGlnMDV5dTJ0bXRid2UxM2k1YiJ9.X0IksSs8jASxqvYUU_s4NA';
+  var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/streets-v11',
+  center: [position.coords.longitude, position.coords.latitude],
+  zoom: 13
+  });
+  var mapDiv = document.createElement('div');
+  mapDiv.innerHTML = map;
+  map.addControl(
+  new MapboxDirections({
+  accessToken: mapboxgl.accessToken
+  }),
+  'top-left'
+  );
+  document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+}
+getLocation();
+</script>
+ 
+</body>
+</html>

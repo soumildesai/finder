@@ -1,0 +1,113 @@
+*{
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-image: linear-gradient(120deg, black,white);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+.header{
+    font-size: 3rem;
+    min-height: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 150px;
+}
+#find{
+    border: none;
+    background: white;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 1rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
+    padding-bottom: 1rem;
+    font-family: "Poppins", sans-serif;
+    transition: all 0.3s ease;
+}
+#find:hover{
+    background: black;
+    color: white;
+    transform: scale(1.15);
+}
+#manual{
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 75px;
+    transition: all 0.3s ease;
+}
+#manual:hover{
+    color: white;
+    transform: scale(1.15);
+}
+#manualEnterForm{
+    display: flex;
+    margin-top: 75px;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+#mapid{
+    height: 720px;
+}
+nav{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 100;
+    background-color: black;
+    overflow: sticky;
+    padding: 5px;
+}
+#headerHome:hover{
+    color: rgb(226,226,226);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    transform: scale(1.15);
+}
+#headerHome{
+    color: rgb(200, 28, 28);
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-size: 20px;
+    transition: all 0.3s ease;
+    border: none;
+    background: black;
+    text-decoration: none;
+}
+.navlinks{
+    display: flex;
+    justify-content: space-around;
+    width: 30%;
+    transition: all 0.3s ease;
+}
+.navlinks a{
+    color: rgb(226,226,226);
+    text-decoration: none;
+    letter-spacing: 3px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+.navlinks a:hover{
+    color: rgb(200, 28, 28);
+    transition: all 0.3s ease;
+    cursor: pointer;
+ }
+.navlinks li{
+    list-style: none;
+}
